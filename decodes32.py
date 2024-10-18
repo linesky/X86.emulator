@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # Lista de registradores
-registers = ["eax", "ebx", "ecx", "esi", "edi","esp"]
+registers = ["eax", "ebx", "ecx","edx", "esi", "edi","esp"]
 
 # Lista de instruções
 instructions = ["mov", "add", "sub", "mul", "div", "imul", "idiv", "and", "or","xor"]
