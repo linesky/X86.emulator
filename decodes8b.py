@@ -2,10 +2,10 @@ import os
 import subprocess
 
 # Lista de registradores
-registers = ["ah","al", "bh" , "bl", "ch","cl","dh","dl"]
+registers = ["ah", "bh", "ch","dh","al","bl", "cl", "dl","0xff"]
 
 # Lista de instruções
-instructions = ["mov", "add", "sub", "and", "or","xor"]
+instructions = ["mov", "add" ,"sub", "and", "or","xor"]
 
 # Valor para a operação
 value = "0x10"
