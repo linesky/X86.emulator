@@ -33,15 +33,18 @@ def generate_assembly_and_test(instruction, register, value):
     nasm_command = f"nasm {asm_file} -o {bin_file} >> {output_file} 2>&1"
     nasm_result = subprocess.run(nasm_command, shell=True)
 
-    # Verificar se houve erro no NASM
+ # Verificar se houve erro no NASM
     if nasm_result.returncode == 0:
         # Se compilou corretamente, gerar o hexdump do binário com xxd
-        xxd_command = f"xxd {bin_file} >> {output_file}"
-        subprocess.run(xxd_command, shell=True)
-    else:
-        # Escrever no arquivo que houve um erro
-        with open(output_file, "a") as f:
-            f.write(f"\nErro ao compilar {instruction} {register},{value}\n")
+        f1=open(f"{bin_file}","rb")
+        sss=f1.read()
+        f1.close()
+        s=""
+        for b in sss:
+            s=s+f"{b:02x}"
+        s=s+"\n"
+        with open(output_file, "a") as asm:
+            asm.write(s)
 
 # Testar todas as combinações de instruções e registradores
 for instruction in instructions:
