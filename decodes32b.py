@@ -2,13 +2,13 @@ import os
 import subprocess
 
 # Lista de registradores
-registers = ["eax", "ebx", "ecx","edx", "esi", "edi","esp"]
+registers = ["eax", "ebx", "ecx","edx", "esi", "edi","esp","[ebx]", "[esi]", "[edi]","[esp]","ebp","[ebp]"]
 
 # Lista de instruções
-instructions = ["mov", "add", "sub", "and", "or","xor"]
+instructions = ["mov", "add" ,"sub", "and", "or","xor"]
 
 # Valor para a operação
-value = "0x10000000"
+value = "0x10"
 
 # Caminho dos arquivos temporários
 asm_file = "/tmp/out.asm"
