@@ -5,7 +5,7 @@ import subprocess
 registers = ["ax", "bx", "cx","dx", "si", "di","sp"]
 
 # Lista de instruções
-instructions = ["mov", "add", "sub", "mul", "div", "imul", "idiv", "and", "or","xor"]
+instructions = ["mov", "add", "sub", "and", "or","xor"]
 
 # Valor para a operação
 value = "0x1000"
@@ -27,7 +27,7 @@ def generate_assembly_and_test(instruction, register, value):
     # Escrever o arquivo assembly
     with open(asm_file, "w") as asm:
         asm.write(asm_content)
-    nasm_command = f'echo {instruction+" "+register+","+value} >> {output_file}'
+    nasm_command = f'printf "{instruction} {register},{value} | " >> out.txt'
     nasm_result = subprocess.run(nasm_command, shell=True)
     # Executar o NASM e redirecionar saída para out.txt
     nasm_command = f"nasm {asm_file} -o {bin_file} >> {output_file} 2>&1"
