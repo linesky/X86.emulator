@@ -3,9 +3,9 @@
 #include <string.h>
 
 // Lista de registradores
-char *registers[] = {"ah","al", "bh","bl", "ch","cl", "dh","dl","ax", "bx", "cx","dx", "si", "di","sp", "[bx]", "[si]", "[di]","[sp]","bp","[bp]","[0x1000]","eax", "ebx", "ecx","edx", "esi", "edi","esp","[ebx]", "[esi]", "[edi]","[esp]","ebp","[ebp]","0x10000000"};
+char *registers[] = {"ah","al", "bh","bl", "ch","cl", "dh","dl","ax", "bx", "cx","dx", "si", "di","sp", "[bx]", "[si]", "[di]","[sp]","bp","[bp]","[0x1000]","eax", "ebx", "ecx","edx", "esi", "edi","esp","[ebx]", "[esi]", "[edi]","[esp]","ebp","[ebp]","0x10000000","0xff"};
 // Lista de instruções
-char *instructions[] = {"int","inc","dec"};
+char *instructions[] = {"int","inc","dec","mul","imul","div","idiv"};
 // Valor a ser utilizado nas operações
 char *value = "0x1000";
 
