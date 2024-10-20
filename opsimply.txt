@@ -28,10 +28,8 @@ iretw | cf
 iretd | 66cf
 lahf | 9f
 leave | c9
-loadall | /tmp/out.asm:2: warning: instruction obsolete and removed from the target CPU [-w+obsolete-removed]
-0f07
-loadall286 | /tmp/out.asm:2: warning: instruction obsolete and removed from the target CPU [-w+obsolete-removed]
-0f05
+loadall | 0f07
+loadall286 | 0f05
 movsb | a4
 movsw | a5
 movsd | 66a5
