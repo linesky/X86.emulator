@@ -2,10 +2,10 @@ import os
 import subprocess
 
 # Lista de registradores
-registers = ["ah","al", "bh","bl", "ch","cl", "dh","dl","ax", "bx", "cx","dx", "si", "di","sp", "[bx]", "[si]", "[di]","[sp]","bp","[bp]","[0x1000]","eax", "ebx", "ecx","edx", "esi", "edi","esp","[ebx]", "[esi]", "[edi]","[esp]","ebp","[ebp]","0x10000000"]
+registers = ["ah","al", "bh","bl", "ch","cl", "dh","dl","ax", "bx", "cx","dx", "si", "di","sp", "[bx]", "[si]", "[di]","[sp]","bp","[bp]","[0x1000]","eax", "ebx", "ecx","edx", "esi", "edi","esp","[ebx]", "[esi]", "[edi]","[esp]","ebp","[ebp]","0x10000000","0xff"]
 
 # Lista de instruções
-instructions = ["int","inc","dec"]
+instructions = ["int","inc","dec","mul","imul","div","idiv"]
 
 # Valor para a operação
 value = "0xff"
