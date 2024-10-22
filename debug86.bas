@@ -17,15 +17,14 @@ enum Opcodes
     MOV_DX = &HBA
     NOP    = &H90
     ADD_AX = &H05
-    ADD_BX = &H81
-    ADD_CX = &H03
-    ADD_DX = &H02
+    ADDss = &H81
+    
     RET    = &HC3
 end enum
 
 ' Função para exibir o estado dos registradores
-sub print_state(instruction as string)
-    print "IP:" + hex(ip, 4) + " | AX:" & hex(ax, 4) + " | BX:" & hex(bx, 4) + " | CX:" & hex(cx, 4) + " | DX:" + hex(dx, 4) + " | Executando: " + instruction
+sub print_state(instruction as string,i as integer)
+    print "IP:" + hex(ip, 4) + " | AX:" & hex(ax, 4) + " | BX:" & hex(bx, 4) + " | CX:" & hex(cx, 4) + " | DX:" + hex(dx, 4) + " | Executando: " + instruction + ","+hex(i)
 end sub
 
 ' Função para carregar o programa na memória
@@ -52,52 +51,55 @@ sub emulate()
 
         select case opcode
             case RET
-                print_state("ret")
+                print_state("ret",0)
                 print "Instrução 'ret' atingida. Saindo do programa."
                 exit while
 
             case MOV_AX
                 ax = memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("mov ax")
+                print_state("mov ax",memory(ip + 1) or (memory(ip + 2) shl 8))
                 ip += 3
 
             case MOV_BX
                 bx = memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("mov bx")
+                print_state("mov bx",memory(ip + 1) or (memory(ip + 2) shl 8))
                 ip += 3
 
             case MOV_CX
                 cx = memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("mov cx")
+                print_state("mov cx",memory(ip + 1) or (memory(ip + 2) shl 8))
                 ip += 3
 
             case MOV_DX
                 dx = memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("mov dx")
+                print_state("mov dx",memory(ip + 1) or (memory(ip + 2) shl 8))
                 ip += 3
 
             case ADD_AX
                 ax += memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("add ax")
+                print_state("add ax",memory(ip + 1) or (memory(ip + 2) shl 8))
                 ip += 3
 
-            case ADD_BX
-                bx += memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("add bx")
-                ip += 3
+            case ADDss
+                select case memory(ip + 1)
+                    case &hc3
+                        bx += memory(ip + 2) or (memory(ip + 3) shl 8)
+                        print_state("add bx",memory(ip + 2) or (memory(ip + 3) shl 8))
+                        ip += 4
 
-            case ADD_CX
-                cx += memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("add cx")
-                ip += 3
+                    case &hc1
+                        cx += memory(ip + 2) or (memory(ip + 3) shl 8)
+                        print_state("add cx",memory(ip + 2) or (memory(ip + 3) shl 8))
+                        ip += 4
 
-            case ADD_DX
-                dx += memory(ip + 1) or (memory(ip + 2) shl 8)
-                print_state("add dx")
-                ip += 3
+                    case &hc2
+                         dx += memory(ip + 2) or (memory(ip + 3) shl 8)
+                         print_state("add dx",memory(ip + 2) or (memory(ip + 3) shl 8))
+                         ip += 4
+                end select
 
             case NOP
-                print_state("nop")
+                print_state("nop",0)
                 ip += 1
 
             case else
