@@ -21,16 +21,15 @@ enum opcodes {
     MOV_DX = 0xBA,
     NOP = 0x90,
     ADD_AX = 0x05,
-    ADD_BX = 0x81, // Opcodes simplificados
-    ADD_CX = 0x03,
-    ADD_DX = 0x02,
+    ADDss = 0x81, // Opcodes simplificados
+    
     RET = 0xC3
 };
 
 // Função para exibir o estado dos registradores
-void print_state(const char* instruction) {
-    printf("IP: %04X | AX: %04X | BX: %04X | CX: %04X | DX: %04X | Executando: %s\n", 
-            ip, ax, bx, cx, dx, instruction);
+void print_state(const char* instruction,int i) {
+    printf("IP: %04X | AX: %04X | BX: %04X | CX: %04X | DX: %04X | Executando: %s,%x\n", 
+            ip, ax, bx, cx, dx, instruction,i);
 }
 
 // Função para carregar o programa na memória
@@ -57,7 +56,7 @@ void emulate() {
         uint8_t opcode = memory[ip];
 
         if (opcode == RET) {
-            print_state("ret");
+            print_state("ret",0);
             printf("Instrução 'ret' atingida. Saindo do programa.\n");
             break;
         }
@@ -66,61 +65,69 @@ void emulate() {
             case MOV_AX: {
                 uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
                 ax = value;
-                print_state("mov ax");
+                print_state("mov ax",value);
                 ip += 3;
                 break;
             }
             case MOV_BX: {
                 uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
                 bx = value;
-                print_state("mov bx");
+                print_state("mov bx",value);
                 ip += 3;
                 break;
             }
             case MOV_CX: {
                 uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
                 cx = value;
-                print_state("mov cx");
+                print_state("mov cx",value);
                 ip += 3;
                 break;
             }
             case MOV_DX: {
                 uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
                 dx = value;
-                print_state("mov dx");
+                print_state("mov dx",value);
                 ip += 3;
                 break;
             }
             case ADD_AX: {
                 uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
                 ax += value;
-                print_state("add ax");
+                print_state("add ax",value);
                 ip += 3;
                 break;
             }
-            case ADD_BX: {
-                uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
-                bx += value;
-                print_state("add bx");
-                ip += 3;
+            case ADDss: {
+                switch (memory[ip + 1]){
+                case  0xc3:{
+                    uint16_t value = memory[ip + 2] | (memory[ip + 3] << 8);
+                    bx += value;
+                    print_state("add bx",value);
+                    ip += 4;
+                    break;
+                }
+                
+            
+                 case  0xc1: {
+                    uint16_t value = memory[ip + 2] | (memory[ip + 3] << 8);
+                    cx += value;
+                    print_state("add cx",value);
+                    ip += 4;
+                    break;
+                }
+                case 0xc2:  {
+                    uint16_t value = memory[ip + 2] | (memory[ip + 3] << 8);
+                    dx += value;
+                    print_state("add dx",value);
+                    ip += 4;
+                    break;
+                }
+                }
                 break;
-            }
-            case ADD_CX: {
-                uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
-                cx += value;
-                print_state("add cx");
-                ip += 3;
-                break;
-            }
-            case ADD_DX: {
-                uint16_t value = memory[ip + 1] | (memory[ip + 2] << 8);
-                dx += value;
-                print_state("add dx");
-                ip += 3;
-                break;
+
             }
             case NOP:
-                print_state("nop");
+                print_state("nop",0);
                 ip += 1;
                 break;
             default:
