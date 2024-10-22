@@ -42,7 +42,7 @@ def load_program(file_name):
 # Emulador simples que processa instrução por instrução
 def emulate():
     while True:
-        opcode = memory[registers['ip']]
+        opcode=memory[registers['ip']]
         
         if opcode not in valid_opcodes:
             print(f"Erro: Opcode desconhecido {opcode:02X} em IP {registers['ip']:04X}")
@@ -60,6 +60,7 @@ def emulate():
                 registers['ax'] = value
                 print_state(f"mov ax, {value:04X}")
             elif opcode == 0xBB:
+                
                 registers['bx'] = value
                 print_state(f"mov bx, {value:04X}")
             elif opcode == 0xB9:
@@ -76,16 +77,24 @@ def emulate():
             if opcode == 0x05:
                 registers['ax'] += value
                 print_state(f"add ax, {value:04X}")
+                registers['ip'] += 3
             elif opcode == 0x81:
-                registers['bx'] += value
-                print_state(f"add bx, {value:04X}")
-            elif opcode == 0x03:
-                registers['cx'] += value
-                print_state(f"add cx, {value:04X}")
-            elif opcode == 0x02:
-                registers['dx'] += value
-                print_state(f"add dx, {value:04X}")
-            registers['ip'] += 3
+                if memory[registers['ip']+1] == 0xc3:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['bx'] += value
+                    
+                    print_state(f"add bx, {value:04X}")
+                    registers['ip'] += 4
+                elif  memory[registers['ip']+1] == 0xc1:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['cx'] += value
+                    print_state(f"add cx, {value:04X}")
+                    registers['ip'] += 4
+                elif memory[registers['ip']+1] == 0xc2:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['dx'] += value
+                    print_state(f"add dx, {value:04X}")
+                    registers['ip'] += 4
         
         # NOP
         elif opcode == 0x90:
