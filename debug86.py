@@ -116,13 +116,35 @@ def emulate():
             registers['ax'] -= value
             print_state(f"sub ax, {value:04X}")
             registers['ip'] += 3
-        elif opcode == 0xf7 and (memory[registers['ip'] + 1])==0xe0:
+        elif opcode == 0xf7:
+            if (memory[registers['ip'] + 1])==0xe0:
             
-            registers['ax'] *= registers['ax']
-            registers['ax'] =  registers['ax'] & 0xffff
+                registers['ax'] *= registers['ax']
+                registers['ax'] =  registers['ax'] & 0xffff
             
-            print_state(f"mul ax")
-            registers['ip'] += 3
+                print_state(f"mul ax")
+                registers['ip'] += 2
+            elif (memory[registers['ip'] + 1])==0xe3:
+            
+                registers['ax'] *= registers['bx']
+                registers['ax'] =  registers['ax'] & 0xffff
+            
+                print_state(f"mul bx")
+                registers['ip'] += 2
+            elif (memory[registers['ip'] + 1])==0xe1:
+            
+                registers['ax'] *= registers['cx']
+                registers['ax'] =  registers['ax'] & 0xffff
+            
+                print_state(f"mul cx")
+                registers['ip'] += 2
+            elif (memory[registers['ip'] + 1])==0xe2:
+            
+                registers['ax'] *= registers['dx']
+                registers['ax'] =  registers['ax'] & 0xffff
+            
+                print_state(f"mul dx")
+                registers['ip'] += 2
         # NOP
         elif opcode == 0x90:
             print_state("nop")
