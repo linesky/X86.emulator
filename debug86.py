@@ -22,8 +22,8 @@ valid_opcodes = {
     0x90: "nop",
     0x05: "add ax,",
     0x81: "add bx,",  # Note: normally `add` would use 03h, but simplifying for example
-    0x03: "add cx,",  
-    0x02: "add dx,", 
+    0x2d: "sub ax,",  
+    0xf7: "add dx,", 
     0xC3: "ret"
 }
 
@@ -72,7 +72,7 @@ def emulate():
             registers['ip'] += 3
         
         # ADD AX, BX, CX, DX
-        elif opcode in (0x05, 0x81, 0x03, 0x02):
+        elif opcode in (0x05, 0x81):
             value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
             if opcode == 0x05:
                 registers['ax'] += value
@@ -95,7 +95,34 @@ def emulate():
                     registers['dx'] += value
                     print_state(f"add dx, {value:04X}")
                     registers['ip'] += 4
-        
+                elif memory[registers['ip']+1] == 0xeb:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['bx'] -= value
+                    print_state(f"sub bx, {value:04X}")
+                    registers['ip'] += 4
+                elif memory[registers['ip']+1] == 0xe9:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['cx'] -= value
+                    print_state(f"sub cx, {value:04X}")
+                    registers['ip'] += 4
+                elif memory[registers['ip']+1] == 0xea:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    registers['dx'] -= value
+                    print_state(f"sub dx, {value:04X}")
+                    registers['ip'] += 4
+                
+        elif opcode == 0x2d:
+            value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
+            registers['ax'] -= value
+            print_state(f"sub ax, {value:04X}")
+            registers['ip'] += 3
+        elif opcode == 0xf7 and (memory[registers['ip'] + 1])==0xe0:
+            
+            registers['ax'] *= registers['ax']
+            registers['ax'] =  registers['ax'] & 0xffff
+            
+            print_state(f"mul ax")
+            registers['ip'] += 3
         # NOP
         elif opcode == 0x90:
             print_state("nop")
