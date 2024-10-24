@@ -30,6 +30,7 @@ valid_opcodes = {
     0x5b: "pop bx",
     0x59: "pop cx",
     0x5a: "pop dx",
+    0x50: "push ax",
     0xC3: "ret"
 }
 
@@ -201,6 +202,16 @@ def emulate():
             registers['sp'] += 2
             print_state("pop dx")
             registers['ip'] += 1
+        elif opcode == 0x50:
+            value = registers['ax'] 
+            memory[registers['sp'] -0]=registers['ax']>>8 & 0xff
+            memory[registers['sp'] -1]=registers['ax'] & 0xff
+            
+            registers['sp'] -= 2
+            
+            print_state("push ax")
+            
+            registers['ip'] += 3
         # NOP
         elif opcode == 0x90:
             print_state("nop")
