@@ -1,7 +1,7 @@
 import sys
 
 # Definição de uma memória de 64k
-MEM_SIZE = 0x10000
+MEM_SIZE = 0x10002
 memory = [0] * MEM_SIZE
 
 # Registos
@@ -10,6 +10,7 @@ registers = {
     "bx": 0,
     "cx": 0,
     "dx": 0,
+    "sp":0xffff,
     "ip": 0x100  # Início do código em 0x100
 }
 
@@ -24,12 +25,14 @@ valid_opcodes = {
     0x81: "add bx,",  # Note: normally `add` would use 03h, but simplifying for example
     0x2d: "sub ax,",  
     0xf7: "add dx,", 
+    0x68: "push 0x1000",
+    0x58: "pop ax", 
     0xC3: "ret"
 }
 
 # Função para exibir o estado atual dos registradores
 def print_state(instruction):
-    print(f"IP: {registers['ip']:04X} | AX: {registers['ax']:04X} | BX: {registers['bx']:04X} | CX: {registers['cx']:04X} | DX: {registers['dx']:04X} | Executando: {instruction}")
+    print(f"IP: {registers['ip']:04X} | SP: {registers['sp']:04X} | AX: {registers['ax']:04X} | BX: {registers['bx']:04X} \n CX: {registers['cx']:04X} | DX: {registers['dx']:04X} | Executando: {instruction}")
 
 # Função para carregar o programa na memória
 def load_program(file_name):
@@ -119,32 +122,53 @@ def emulate():
         elif opcode == 0xf7:
             if (memory[registers['ip'] + 1])==0xe0:
             
-                registers['ax'] *= registers['ax']
+                registers['ax'] =registers['ax'] * registers['ax']
                 registers['ax'] =  registers['ax'] & 0xffff
-            
+                
                 print_state(f"mul ax")
                 registers['ip'] += 2
             elif (memory[registers['ip'] + 1])==0xe3:
             
-                registers['ax'] *= registers['bx']
+                registers['ax'] =registers['ax'] * registers['bx']
                 registers['ax'] =  registers['ax'] & 0xffff
-            
+                
                 print_state(f"mul bx")
                 registers['ip'] += 2
             elif (memory[registers['ip'] + 1])==0xe1:
             
-                registers['ax'] *= registers['cx']
+                registers['ax'] =registers['ax'] * registers['cx']
                 registers['ax'] =  registers['ax'] & 0xffff
-            
+                
                 print_state(f"mul cx")
                 registers['ip'] += 2
             elif (memory[registers['ip'] + 1])==0xe2:
             
-                registers['ax'] *= registers['dx']
+                registers['ax'] =registers['ax'] * registers['dx']
                 registers['ax'] =  registers['ax'] & 0xffff
-            
+                
                 print_state(f"mul dx")
                 registers['ip'] += 2
+        elif opcode == 0x68:
+            value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
+            memory[registers['sp'] -0]=memory[registers['ip'] + 1]
+            memory[registers['sp'] -1]=memory[registers['ip'] + 2]
+            print (memory[registers['sp'] -0])
+            print (memory[registers['sp'] -1])
+            registers['sp'] -= 2
+            
+            print_state("push "+hex(value))
+            
+            registers['ip'] += 3
+        elif opcode == 0x58:
+            
+            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            
+            registers['ax']=value
+            
+            
+            registers['sp'] += 2
+            print_state("pop ax")
+            registers['ip'] += 1
         # NOP
         elif opcode == 0x90:
             print_state("nop")
