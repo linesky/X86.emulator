@@ -204,14 +204,14 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x50:
             value = registers['ax'] 
-            memory[registers['sp'] -0]=registers['ax']>>8 & 0xff
-            memory[registers['sp'] -1]=registers['ax'] & 0xff
+            memory[registers['sp'] -0]=registers['ax'] & 0xff
+            memory[registers['sp'] -1]=registers['ax']>>8 & 0xff
             
             registers['sp'] -= 2
             
             print_state("push ax")
             
-            registers['ip'] += 3
+            registers['ip'] += 1
         # NOP
         elif opcode == 0x90:
             print_state("nop")
