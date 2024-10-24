@@ -34,6 +34,7 @@ valid_opcodes = {
     0x53: "push bx",
     0x51: "push cx",
     0x52: "push dx",
+    0x89: "mov ax,bx",
     0xC3: "ret"
 }
 
@@ -245,6 +246,22 @@ def emulate():
             print_state("push dx")
             
             registers['ip'] += 1
+        elif opcode ==0x89:
+            value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
+            if memory[registers['ip'] + 1] == 0xc0:
+                registers['ax'] = registers['ax']
+                print_state(f"mov ax,ax")
+            elif memory[registers['ip'] + 1] == 0xd8:
+                
+                registers['ax'] = registers['bx']
+                print_state(f"mov ax,bx")
+            elif memory[registers['ip'] + 1] == 0xc8:
+                registers['ax'] = registers['cx']
+                print_state(f"mov ax,cx")
+            elif memory[registers['ip'] + 1] == 0xd0:
+                registers['ax'] = registers['dx']
+                print_state(f"mov ax,dx")
+            registers['ip'] += 2
         # NOP
         elif opcode == 0x90:
             print_state("nop")
