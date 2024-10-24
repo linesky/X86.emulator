@@ -26,7 +26,10 @@ valid_opcodes = {
     0x2d: "sub ax,",  
     0xf7: "add dx,", 
     0x68: "push 0x1000",
-    0x58: "pop ax", 
+    0x58: "pop ax",
+    0x5b: "pop bx",
+    0x59: "pop cx",
+    0x5a: "pop dx",
     0xC3: "ret"
 }
 
@@ -152,8 +155,7 @@ def emulate():
             value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
             memory[registers['sp'] -0]=memory[registers['ip'] + 1]
             memory[registers['sp'] -1]=memory[registers['ip'] + 2]
-            print (memory[registers['sp'] -0])
-            print (memory[registers['sp'] -1])
+            
             registers['sp'] -= 2
             
             print_state("push "+hex(value))
@@ -168,6 +170,36 @@ def emulate():
             
             registers['sp'] += 2
             print_state("pop ax")
+            registers['ip'] += 1
+        elif opcode == 0x5b:
+            
+            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            
+            registers['bx']=value
+            
+            
+            registers['sp'] += 2
+            print_state("pop bx")
+            registers['ip'] += 1
+        elif opcode == 0x59:
+            
+            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            
+            registers['cx']=value
+            
+            
+            registers['sp'] += 2
+            print_state("pop cx")
+            registers['ip'] += 1
+        elif opcode == 0x5a:
+            
+            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            
+            registers['dx']=value
+            
+            
+            registers['sp'] += 2
+            print_state("pop dx")
             registers['ip'] += 1
         # NOP
         elif opcode == 0x90:
