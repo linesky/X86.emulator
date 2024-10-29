@@ -158,8 +158,8 @@ def emulate():
                 registers['ip'] += 2
         elif opcode == 0x68:
             value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
-            memory[registers['sp'] -0]=memory[registers['ip'] + 1]
-            memory[registers['sp'] -1]=memory[registers['ip'] + 2]
+            memory[registers['sp'] -1]=memory[registers['ip'] + 1]
+            memory[registers['sp'] -0]=memory[registers['ip'] + 2]
             
             registers['sp'] -= 2
             
@@ -168,7 +168,7 @@ def emulate():
             registers['ip'] += 3
         elif opcode == 0x58:
             
-            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            value = memory[registers['sp'] +1] + (memory[registers['sp'] + 2] << 8)
             
             registers['ax']=value
             
@@ -178,7 +178,7 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x5b:
             
-            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            value = memory[registers['sp'] +1] + (memory[registers['sp'] + 2] << 8)
             
             registers['bx']=value
             
@@ -188,7 +188,7 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x59:
             
-            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            value = memory[registers['sp'] +1] + (memory[registers['sp'] + 2] << 8)
             
             registers['cx']=value
             
@@ -198,7 +198,7 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x5a:
             
-            value = memory[registers['sp'] +2] + (memory[registers['sp'] + 1] << 8)
+            value = memory[registers['sp'] +1] + (memory[registers['sp'] + 2] << 8)
             
             registers['dx']=value
             
@@ -208,8 +208,8 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x50:
             
-            memory[registers['sp'] -0]=registers['ax'] & 0xff
-            memory[registers['sp'] -1]=registers['ax']>>8 & 0xff
+            memory[registers['sp'] -1]=registers['ax'] & 0xff
+            memory[registers['sp'] -0]=registers['ax']>>8 & 0xff
             
             registers['sp'] -= 2
             
@@ -218,8 +218,8 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x53:
            
-            memory[registers['sp'] -0]=registers['bx'] & 0xff
-            memory[registers['sp'] -1]=registers['bx']>>8 & 0xff
+            memory[registers['sp'] -1]=registers['bx'] & 0xff
+            memory[registers['sp'] -0]=registers['bx']>>8 & 0xff
             
             registers['sp'] -= 2
             
@@ -228,8 +228,8 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x51:
            
-            memory[registers['sp'] -0]=registers['cx'] & 0xff
-            memory[registers['sp'] -1]=registers['cx']>>8 & 0xff
+            memory[registers['sp'] -1]=registers['cx'] & 0xff
+            memory[registers['sp'] -0]=registers['cx']>>8 & 0xff
             
             registers['sp'] -= 2
             
@@ -238,8 +238,8 @@ def emulate():
             registers['ip'] += 1
         elif opcode == 0x52:
            
-            memory[registers['sp'] -0]=registers['dx'] & 0xff
-            memory[registers['sp'] -1]=registers['dx']>>8 & 0xff
+            memory[registers['sp'] -1]=registers['dx'] & 0xff
+            memory[registers['sp'] -0]=registers['dx']>>8 & 0xff
             
             registers['sp'] -= 2
             
