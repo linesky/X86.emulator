@@ -11,7 +11,10 @@ registers = {
     "cx": 0,
     "dx": 0,
     "sp":0xffff,
-    "ip": 0x100  # Início do código em 0x100
+    "ip": 0x100,
+    "fcarry": 0,
+    "fzero":0
+
 }
 
 # Lista de opcodes permitidos
@@ -36,12 +39,15 @@ valid_opcodes = {
     0x52: "push dx",
     0x89: "mov ax,bx",
     0x8b: "mov ax,[bx]",
+    0x3d: "cmp ax,0x100",
+   
+
     0xC3: "ret"
 }
 
 # Função para exibir o estado atual dos registradores
 def print_state(instruction):
-    print(f"IP: {registers['ip']:04X} | SP: {registers['sp']:04X} | AX: {registers['ax']:04X} | BX: {registers['bx']:04X} \n CX: {registers['cx']:04X} | DX: {registers['dx']:04X} | Executando: {instruction}")
+    print(f"IP: {registers['ip']:04X} | SP: {registers['sp']:04X} | AX: {registers['ax']:04X} | BX: {registers['bx']:04X} \n CX: {registers['cx']:04X} | DX: {registers['dx']:04X} | carry={registers['fcarry']:04X} |  zero={registers['fzero']:04X}\n Executando: {instruction}")
 
 # Função para carregar o programa na memória
 def load_program(file_name):
@@ -122,7 +128,56 @@ def emulate():
                     registers['dx'] -= value
                     print_state(f"sub dx, {value:04X}")
                     registers['ip'] += 4
-                
+
+                elif memory[registers['ip']+1] == 0xfb:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    if registers['bx'] == value:
+                        registers['fzero']=1
+                    else:                        
+                        registers['fzero']=0
+
+
+                    if registers['bx']-value<0:
+                        registers['fcarry']=1
+                    else:
+                        registers['fcarry']=0
+
+
+                    print_state(f"cmp bx,"+hex(value))
+                    registers['ip'] += 4
+                elif memory[registers['ip']+1] == 0xf9:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    if registers['cx'] == value:
+                        registers['fzero']=1
+                    else:                        
+                        registers['fzero']=0
+
+
+                    if registers['cx']-value<0:
+                        registers['fcarry']=1
+                    else:
+                        registers['fcarry']=0
+
+
+                    print_state(f"cmp cx,"+hex(value))
+                    registers['ip'] += 4
+                elif memory[registers['ip']+1] == 0xfa:
+                    value = memory[registers['ip'] + 2] + (memory[registers['ip'] + 3] << 8)
+                    if registers['dx'] == value:
+                        registers['fzero']=1
+                    else:                        
+                        registers['fzero']=0
+
+
+                    if registers['dx']-value<0:
+                        registers['fcarry']=1
+                    else:
+                        registers['fcarry']=0
+
+                    print_state(f"cmp dx,"+hex(value))
+                    registers['ip'] += 4
+
+
         elif opcode == 0x2d:
             value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
             registers['ax'] -= value
@@ -369,6 +424,21 @@ def emulate():
                 print_state("mov dx,[bx]")
             
                 registers['ip'] += 2
+        elif opcode == 0x3d:            
+            value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
+            if registers['ax'] == value:
+                registers['fzero']=1
+            else:                        
+                registers['fzero']=0
+
+
+            if registers['ax']-value<0:
+                registers['fcarry']=1
+            else:
+                registers['fcarry']=0
+            print_state(f"cmp ax,"+hex(value))
+            registers['ip'] += 3        
+            
 
 
         # NOP
