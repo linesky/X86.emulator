@@ -287,6 +287,19 @@ def emulate():
             elif memory[registers['ip'] + 1] == 0xd1:
                 registers['cx'] = registers['dx']
                 print_state(f"mov cx,dx")
+            elif memory[registers['ip'] + 1] == 0xc2:
+                registers['dx'] = registers['ax']
+                print_state(f"mov dx,ax")
+            elif memory[registers['ip'] + 1] == 0xda:
+                
+                registers['dx'] = registers['bx']
+                print_state(f"mov dx,bx")
+            elif memory[registers['ip'] + 1] == 0xca:
+                registers['dx'] = registers['cx']
+                print_state(f"mov dx,cx")
+            elif memory[registers['ip'] + 1] == 0xd2:
+                registers['dx'] = registers['dx']
+                print_state(f"mov dx,dx")
             registers['ip'] += 2
         # NOP
         elif opcode == 0x90:
