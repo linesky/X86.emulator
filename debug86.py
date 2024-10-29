@@ -35,6 +35,7 @@ valid_opcodes = {
     0x51: "push cx",
     0x52: "push dx",
     0x89: "mov ax,bx",
+    0x8b: "mov ax,[bx]",
     0xC3: "ret"
 }
 
@@ -301,19 +302,53 @@ def emulate():
                 registers['dx'] = registers['dx']
                 print_state(f"mov dx,dx")
             elif memory[registers['ip'] + 1] == 0xe0:
-                registers['ax'] = registers['sp']
+                registers['ax'] = registers['sp'] + 1
                 print_state(f"mov ax,sp")
             elif memory[registers['ip'] + 1] == 0xe3:
                 
-                registers['bx'] = registers['sp']
+                registers['bx'] = registers['sp'] + 1
                 print_state(f"mov bx,sp")
             elif memory[registers['ip'] + 1] == 0xe1:
-                registers['cx'] = registers['sp']
+                registers['cx'] = registers['sp'] + 1
                 print_state(f"mov cx,sp")
             elif memory[registers['ip'] + 1] == 0xe2:
-                registers['dx'] = registers['sp']
+                registers['dx'] = registers['sp'] + 1
                 print_state(f"mov dx,sp")
             registers['ip'] += 2
+
+
+        elif opcode == 0x8b:
+            if memory[registers['ip'] + 1] == 0x07: 
+                value = memory[registers['bx'] +0] + (memory[registers['bx'] + 1] << 8)
+            
+                registers['ax']=value
+                print_state("mov ax,[bx]")
+            
+                registers['ip'] += 2
+ 
+            elif memory[registers['ip'] + 1] == 0x1f: 
+                value = memory[registers['bx'] +0] + (memory[registers['bx'] + 1] << 8)
+            
+                registers['bx']=value
+                print_state("mov bx,[bx]")
+            
+                registers['ip'] += 2
+            elif memory[registers['ip'] + 1] == 0x0f: 
+                value = memory[registers['bx'] +0] + (memory[registers['bx'] + 1] << 8)
+            
+                registers['cx']=value
+                print_state("mov cx,[bx]")
+            
+                registers['ip'] += 2
+            elif memory[registers['ip'] + 1] == 0x17: 
+                value = memory[registers['bx'] +0] + (memory[registers['bx'] + 1] << 8)
+            
+                registers['dx']=value
+                print_state("mov dx,[bx]")
+            
+                registers['ip'] += 2
+
+
         # NOP
         elif opcode == 0x90:
             print_state("nop")
