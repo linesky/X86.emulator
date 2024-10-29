@@ -314,6 +314,28 @@ def emulate():
             elif memory[registers['ip'] + 1] == 0xe2:
                 registers['dx'] = registers['sp'] + 1
                 print_state(f"mov dx,sp")
+            elif memory[registers['ip'] + 1] == 0x07:
+                memory[registers['bx'] + 0]  = registers['ax'] & 0xff
+                memory[registers['bx'] + 1]  = registers['ax'] >> 8 & 0xff
+
+                print_state(f"mov [bx],ax")
+            elif memory[registers['ip'] + 1] == 0x1f:
+                memory[registers['bx'] + 0]  = registers['bx'] & 0xff
+                memory[registers['bx'] + 1]  = registers['bx'] >> 8 & 0xff
+
+                print_state(f"mov [bx],bx")
+            elif memory[registers['ip'] + 1] == 0x0f:
+                memory[registers['bx'] + 0]  = registers['cx'] & 0xff
+                memory[registers['bx'] + 1]  = registers['cx'] >> 8 & 0xff
+
+                print_state(f"mov [bx],cx")
+            elif memory[registers['ip'] + 1] == 0x17:
+                memory[registers['bx'] + 0]  = registers['dx'] & 0xff
+                memory[registers['bx'] + 1]  = registers['dx'] >> 8 & 0xff
+
+                print_state(f"mov [bx],dx")
+
+
             registers['ip'] += 2
 
 
