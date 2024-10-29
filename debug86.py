@@ -40,7 +40,8 @@ valid_opcodes = {
     0x89: "mov ax,bx",
     0x8b: "mov ax,[bx]",
     0x3d: "cmp ax,0x100",
-   
+    0x75: "jnz 0x100",
+
 
     0xC3: "ret"
 }
@@ -73,18 +74,21 @@ def emulate():
 
         # MOV AX, BX, CX, DX
         if opcode in (0xB8, 0xBB, 0xB9, 0xBA):
-            value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
+            
             if opcode == 0xB8:
+                value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
                 registers['ax'] = value
                 print_state(f"mov ax, {value:04X}")
             elif opcode == 0xBB:
-                
+                value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
                 registers['bx'] = value
                 print_state(f"mov bx, {value:04X}")
             elif opcode == 0xB9:
+                value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
                 registers['cx'] = value
                 print_state(f"mov cx, {value:04X}")
             elif opcode == 0xBA:
+                value = memory[registers['ip'] + 1] + (memory[registers['ip'] + 2] << 8)
                 registers['dx'] = value
                 print_state(f"mov dx, {value:04X}")
             registers['ip'] += 3
@@ -438,7 +442,21 @@ def emulate():
                 registers['fcarry']=0
             print_state(f"cmp ax,"+hex(value))
             registers['ip'] += 3        
-            
+        elif opcode == 0x75:
+            value=memory[registers['ip']+1]
+            if registers['fzero']!=0:
+                print_state(f"jnz "+hex(registers['ip']+2))
+                registers['ip'] += 2
+            else:     
+                if value>127:
+                    value1=registers['ip']
+                    value2=value-256
+                    print_state(f"jnz "+hex(registers['ip']+2+value2))
+                    registers['ip']=registers['ip']+2+value2
+                else: 
+                    print_state(f"jnz "+hex(registers['ip']+2+value))
+                    registers['ip']=registers['ip']+2+value   
+                    
 
 
         # NOP
