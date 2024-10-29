@@ -300,6 +300,19 @@ def emulate():
             elif memory[registers['ip'] + 1] == 0xd2:
                 registers['dx'] = registers['dx']
                 print_state(f"mov dx,dx")
+            elif memory[registers['ip'] + 1] == 0xe0:
+                registers['ax'] = registers['sp']
+                print_state(f"mov ax,sp")
+            elif memory[registers['ip'] + 1] == 0xe3:
+                
+                registers['bx'] = registers['sp']
+                print_state(f"mov bx,sp")
+            elif memory[registers['ip'] + 1] == 0xe1:
+                registers['cx'] = registers['sp']
+                print_state(f"mov cx,sp")
+            elif memory[registers['ip'] + 1] == 0xe2:
+                registers['dx'] = registers['sp']
+                print_state(f"mov dx,sp")
             registers['ip'] += 2
         # NOP
         elif opcode == 0x90:
